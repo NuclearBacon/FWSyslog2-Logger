@@ -1,0 +1,9 @@
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\bin\Debug\FWSyslog2.exe
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\bin\Debug\FWSyslog2.pdb
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\obj\Debug\FWSyslog2.csprojResolveAssemblyReference.cache
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\obj\Debug\FWSyslog2.Properties.Resources.resources
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\obj\Debug\FWSyslog2.csproj.GenerateResource.Cache
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\obj\Debug\FWSyslog2.exe
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\obj\Debug\FWSyslog2.pdb
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\obj\Debug\FWSyslog2.FWSyslog2ServiceClass.resources
+G:\VS2012 Projects\FWSyslog2\FWSyslog2\bin\Debug\FWSyslog2.exe.config
