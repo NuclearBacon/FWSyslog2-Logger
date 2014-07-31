@@ -13,11 +13,9 @@ namespace FWSyslog2
         // service status
         bool serviceIsStopping = false;
 
-        // database
-        private string sqlConnString;
-
         // TEMP
-        private List<string> messageQueueVisualizer = new List<string>();
+        private List<string> TEMP_messageQueueVisualizer = new List<string>();
+        private bool TEMP_EventLogResults;
 
         #endregion
 
@@ -27,25 +25,45 @@ namespace FWSyslog2
         public FWSyslog2ServiceClass()
         {
             InitializeComponent();
-            messageQueue.CollectionChanged += messageQueue_CollectionChanged;
 
-            ConfigureEventLog();
-            LoadConfigurationSettings();
+            TEMP_EventLogResults = ConfigureEventLog();
+
+            if (!ConfigureEventLog())       // If this fails we cannot access the Event log.  Abort startup.
+            {
+            }
+
+            messageQueue.CollectionChanged += messageQueue_CollectionChanged;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-            /*
-            listenerThread = new Thread(new ThreadStart(Listener));
-            listenerThread.IsBackground = false;
-            listenerThread.Start();
+            // This method is serving as our testing Service:OnStart() call.
 
-            System.Windows.Forms.Timer timTemp = new System.Windows.Forms.Timer();
-            timTemp.Interval = 50;
-            timTemp.Tick += timTemp_Tick;
-            timTemp.Start();
-            */
+            configSettings = new ConfigurationSettings();
+
+            if (!TEMP_EventLogResults)
+            {
+                textBox1.AppendText("There was an error setting up access to the event log.  Suck.");  // remove this
+                //this.ExitCode = 1297;     // http://msdn.microsoft.com/en-us/library/ms681383(v=vs.85)
+                //this.Stop();
+            }
+            else if (!configSettings.LoadValidated)
+            {
+                textBox1.AppendText("There was an error loading configuration settings.  The error could not be recovered from.  The event log should be checked for more details.");  // remove this
+                //this.ExitCode = 1610;     // http://msdn.microsoft.com/en-us/library/ms681385(v=vs.85)
+                //this.Stop();
+            }
+            else
+            {
+                listenerThread = new Thread(new ThreadStart(Listener));
+                listenerThread.IsBackground = false;
+                listenerThread.Start();
+
+                System.Windows.Forms.Timer timTemp = new System.Windows.Forms.Timer();
+                timTemp.Interval = 50;
+                timTemp.Tick += timTemp_Tick;
+                timTemp.Start();
+            }
         }
 
 
@@ -53,12 +71,12 @@ namespace FWSyslog2
         // ======================== TEMP VISUALIZER == REMOVE THIS =========================
         void timTemp_Tick(object sender, EventArgs e)
         {
-            lock (messageQueueVisualizer)
+            lock (TEMP_messageQueueVisualizer)
             {
-                if (messageQueueVisualizer.Count > 0)
+                if (TEMP_messageQueueVisualizer.Count > 0)
                 {
-                    textBox1.AppendText(messageQueueVisualizer[0] + "\r\n");
-                    messageQueueVisualizer.RemoveAt(0);
+                    textBox1.AppendText(TEMP_messageQueueVisualizer[0] + "\r\n");
+                    TEMP_messageQueueVisualizer.RemoveAt(0);
                 }
             }
         }

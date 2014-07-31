@@ -117,21 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DefaultSetting_backlogBulkSendCount" xml:space="preserve">
-    <value>50</value>
-  </data>
-  <data name="DefaultSetting_backlogMaxAge" xml:space="preserve">
-    <value>86400</value>
-  </data>
-  <data name="DefaultSetting_backlogMaxCount" xml:space="preserve">
-    <value>10000</value>
-  </data>
-  <data name="DefaultSetting_listenPort" xml:space="preserve">
-    <value>514</value>
-  </data>
-  <data name="DefaultSetting_messageQueueRevisitDelay" xml:space="preserve">
-    <value>50</value>
-  </data>
   <data name="Service_Autolog" xml:space="preserve">
     <value>False</value>
   </data>

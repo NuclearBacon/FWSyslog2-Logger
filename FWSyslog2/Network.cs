@@ -14,7 +14,6 @@ namespace FWSyslog2
     {
         #region Region: Member definitions
 
-        private int listenPort;
         private UdpClient udpClient;
         private IPAddress defaultGateway;
         private Thread listenerThread;
@@ -64,7 +63,7 @@ namespace FWSyslog2
             {
                 try
                 {
-                    udpClient = new UdpClient(listenPort);
+                    udpClient = new UdpClient(configSettings.GetValue_Int("listenPort"));
                     udpClient.BeginReceive(new AsyncCallback(ListenerCallbackHandler), null);
                 }
                 catch (Exception e)
@@ -87,7 +86,7 @@ namespace FWSyslog2
         private void ListenerCallbackHandler(IAsyncResult result)
         {
             // Collect sender and message data.
-            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, listenPort);
+            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, configSettings.GetValue_Int("listenPort"));
             byte[] receivedData = udpClient.EndReceive(result, ref remoteIpEndPoint);
 
             // Set updClient back up for next message.
@@ -108,9 +107,9 @@ namespace FWSyslog2
             {
                 messageQueue.Add(Encoding.ASCII.GetString(receivedData));
             }
-            lock (messageQueueVisualizer)
+            lock (TEMP_messageQueueVisualizer)
             {
-                messageQueueVisualizer.Add(Encoding.ASCII.GetString(receivedData));
+                TEMP_messageQueueVisualizer.Add(Encoding.ASCII.GetString(receivedData));
             }
         }
 
