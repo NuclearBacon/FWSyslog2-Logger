@@ -61,6 +61,51 @@ namespace FWSyslog2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 50.
+        /// </summary>
+        internal static string DefaultSetting_backlogBulkSendCount {
+            get {
+                return ResourceManager.GetString("DefaultSetting_backlogBulkSendCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 86400.
+        /// </summary>
+        internal static string DefaultSetting_backlogMaxAge {
+            get {
+                return ResourceManager.GetString("DefaultSetting_backlogMaxAge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10000.
+        /// </summary>
+        internal static string DefaultSetting_backlogMaxCount {
+            get {
+                return ResourceManager.GetString("DefaultSetting_backlogMaxCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 514.
+        /// </summary>
+        internal static string DefaultSetting_listenPort {
+            get {
+                return ResourceManager.GetString("DefaultSetting_listenPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 50.
+        /// </summary>
+        internal static string DefaultSetting_messageQueueRevisitDelay {
+            get {
+                return ResourceManager.GetString("DefaultSetting_messageQueueRevisitDelay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to False.
         /// </summary>
         internal static string Service_Autolog {

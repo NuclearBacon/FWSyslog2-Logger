@@ -15,6 +15,10 @@ namespace FWSyslog2
 
         private ObservableCollection<string> messageQueue = new ObservableCollection<string>();
         private System.Threading.Timer timerMessageQueueRevist;
+        private int messageQueueRevisitDelay; //ms
+        private int backlogMaxAge;
+        private int backlogMaxCount;
+        private int backlogBulkSendCount;
 
         #endregion
 
@@ -23,7 +27,7 @@ namespace FWSyslog2
 
 
         /// <summary>
-        /// Event handler for when changes are made to messageQueue, specifically events where a new entry is added.
+        /// Event handler for when changes are made to messageQueue, specifically events where a new entrie is added.
         /// </summary>
         /// <param name="sender">Required, normally provided by system, not used.</param>
         /// <param name="e">Required, normally provided by system, used to detect how the queue was changed.</param>
@@ -52,12 +56,12 @@ namespace FWSyslog2
                     // Set up a revist to the message queue if it's not empty.  This provides a small delay between locks
                     // so that inbound network message threads don't stack up while the message queue is locked for sending.
                     if (messageQueue.Count > 0)
-                        timerMessageQueueRevist = new System.Threading.Timer(timerMessageQueueRevist_Callback, null, configSettings.GetValue_Int("messageQueueRevisitDelay"), Timeout.Infinite);
+                        timerMessageQueueRevist = new System.Threading.Timer(timerMessageQueueRevist_Callback, null, messageQueueRevisitDelay, Timeout.Infinite);
 
                     // Send the fetched message to the database.
                     try
                     {
-                        using (SqlConnection sqlConnection = new SqlConnection(configSettings.GetValue_String("connString")))
+                        using (SqlConnection sqlConnection = new SqlConnection(sqlConnString))
                         {
                             using (SqlCommand sqlCommand = new SqlCommand("dbtest_testtablewrite", sqlConnection))
                             {
