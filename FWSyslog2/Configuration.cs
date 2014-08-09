@@ -21,7 +21,7 @@ namespace FWSyslog2
 
         #region Region: Main methods
 
-
+        // None.  The configuration section's work is done by a container class below.
 
         #endregion
 
@@ -41,10 +41,11 @@ namespace FWSyslog2
         /// <summary>
         /// Records the details of errors that occur during the loading of application settings.
         /// </summary>
-        /// <param name="errorDetails">An explanation of the error, typically the <code>Message</code> member of an <code>Exception</code> object.</param>
-        /// <param name="errorLevel"></param>
-        /// <param name="failedExternalLoad"></param>
-        /// <param name="failedInternalLoad"></param>
+        /// <param name="settingName">The name of the member being loaded.</param>
+        /// <param name="exceptionDetails">The excepton object raised during load.</param>
+        /// <param name="errorLevel">The severity of the error. 1 = warning, 2 = critical.</param>
+        /// <param name="internalSetting">Indicates if the setting was being loaded from internal records (hardcoded.)</param>
+        /// <param name="loadedDefault">For external load failures, the value loaded instead of the external value.</param>
         /// <remarks>
         /// Method is intended to queue up all errors in to a single event.  This prevents spamming the event log for each setting
         /// that failed to load, instead creating a single event of appropriate severity with the details about all failures together.
@@ -110,6 +111,21 @@ namespace FWSyslog2
                                     1,
                                     (short)tempMaxErrorLevel);
             }
+        }
+
+        /// <summary>
+        /// Logs any issue with loading settings from the configuration container.  This should only be needed
+        /// in the event of an internal typographic error (fetching a setting that doesn't exist.)
+        /// </summary>
+        /// <param name="memberName">The name of the member being fetched.</param>
+        /// <param name="e">The exception thrown.</param>
+        private static void RecordSettingFetchError(string memberName, Exception e)
+        {
+            EventLog.WriteEntry(res.WindowsEventLog_AppName,
+                                String.Format("An unrecoverable internal error has occured.  Setting '{0}' could not be loaded.  Details below.\r\n\r\n{1}", memberName, e.Message),
+                                EventLogEntryType.Error,
+                                2,
+                                2);
         }
 
         #endregion
@@ -298,27 +314,61 @@ namespace FWSyslog2
             }
 
             /// <summary>
-            /// Returns the value for 'int' based settings loaded from config files.  Error handling should be
-            /// done by the calling method.
+            /// Returns the value for 'int' based settings loaded from config files.  This method logs any
+            /// errors, but error handling is up to the calling method.
             /// </summary>
             /// <param name="memberName">The  name of the setting.</param>
             /// <returns></returns>
             public int GetValue_Int(string memberName)
             {
-                return Convert.ToInt32((configMembers.Find(cm => cm.memberName == memberName).memberValue));
+                try
+                {
+                    return Convert.ToInt32((configMembers.Find(cm => cm.memberName == memberName).memberValue));
+                }
+                catch (Exception e)
+                {
+                    RecordSettingFetchError(memberName, e);
+                    throw e;
+                }
             }
 
             /// <summary>
-            /// Returns the value for 'string' based settings loaded from config files.  Error handling should be
-            /// done by the calling method.
+            /// Returns the value for 'string' based settings loaded from config files.  This method logs any
+            /// errors, but error handling is up to the calling method.
+            /// </summary>
             /// <param name="memberName">The  name of the setting.</param>
             /// <returns></returns>
             public string GetValue_String(string memberName)
             {
-                return configMembers.Find(cm => cm.memberName == memberName).memberValue;
+                try
+                {
+                    return configMembers.Find(cm => cm.memberName == memberName).memberValue;
+                }
+                catch (Exception e)
+                {
+                    RecordSettingFetchError(memberName, e);
+                    throw e;
+                }
             }
 
-
+            /// <summary>
+            /// Returns the value for 'boolean' based settings loaded from config files.  This method logs any
+            /// errors, but error handling is up to the calling method.
+            /// </summary>
+            /// <param name="memberName">The  name of the setting.</param>
+            /// <returns></returns>
+            public Boolean GetValue_Boolean(string memberName)
+            {
+                try
+                {
+                    return Convert.ToBoolean(configMembers.Find(cm => cm.memberName == memberName).memberValue);
+                }
+                catch (Exception e)
+                {
+                    RecordSettingFetchError(memberName, e);
+                    throw e;
+                }
+            }
             /// <summary>
             /// Helper class; holds temporary data for multiple loaded settings before those settings are processed.
             /// </summary>
@@ -357,4 +407,3 @@ namespace FWSyslog2
         #endregion
     }
 }
-

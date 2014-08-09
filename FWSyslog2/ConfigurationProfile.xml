@@ -14,29 +14,79 @@
                                                                      default value cannot be loaded for any reason.
   </member>
   -->
-  <member name="backlogBulkSendCount">
-    <internalValue>50</internalValue>
-    <externalValueType>Optional</externalValueType>
-  </member>
-  <member name="backlogMaxAge">
-    <internalValue>86400</internalValue>
-    <externalValueType>Optional</externalValueType>
-  </member>
-  <member name="backlogMaxCount">
-    <internalValue>10000</internalValue>
-    <externalValueType>Optional</externalValueType>
-  </member>
-  <member name="listenPort">
-    <internalValue>514</internalValue>
-    <externalValueType>Expected</externalValueType>
-  </member>
+
+  <!-- === SQL server related members. ===================================================================== -->
   <member name="messageQueueRevistDelay">
+    <!-- Time (in milliseconds) between sending queued messages bound for the SQL server.  This is for both normal messages and the backlog. -->
     <internalValue>50</internalValue>
     <externalValueType>Optional</externalValueType>
   </member>
   <member name="connString">
+    <!-- The connection string for the SQL server. -->
     <internalValue></internalValue>
     <externalValueType>ConnectionString</externalValueType>
   </member>
+  <member name="connString">
+    <!-- The connection string for the SQL server. -->
+    <internalValue></internalValue>
+    <externalValueType>ConnectionString</externalValueType>
+  </member>
+
+
+  <!-- === Backlog related memebers. ======================================================================= -->
+  <member name="backlogBulkSendCount">
+    <!-- Max number of records to send in each backlog transmission.  Must be greater than 0. -->
+    <internalValue>50</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="backlogMaxAge">
+    <!-- Max age (in seconds) to retain records in the backlog.  0 indicates no max age. -->
+    <internalValue>86400</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="backlogMaxCount">
+    <!-- Max number of records to keep in the backlog.  0 disables the backlog.  Values less than 0 indicate no maximum. -->
+    <internalValue>10000</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="backlogPurgeOlderRecords">
+    <!-- When true, older records in the backlog will be removed to make room for newer records when the backlog is full.
+         When false, the backlog will discard any new records until room is available for them. -->
+    <internalValue>False</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="backlogLogPurgeStatistics">
+    <!-- When true, timeframe and count details for discarded records will be logged on the server when the backlog is sent. -->
+    <internalValue>True</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+
+  <!-- === Socket related memebers. ========================================================================= -->
+  <member name="listenPort">
+    <!-- The port that Syslog messages will be sent from. -->
+    <internalValue>514</internalValue>
+    <externalValueType>Expected</externalValueType>
+  </member>
+  <member name="syslogHost">
+    <!-- The host name or IP (IPv4, in dot-decimal format) that Syslog messages will be sent from; other senders will be ignored. A value of 0 will use the default gateway's IP. -->
+    <internalValue>0</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="enforceHostMatch">
+    <!-- When true, only messages sent from {syslogHost} will be recorded. -->
+    <internalValue>True</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="openListenerMaxAttempts">
+    <!-- Max number of attempts to open the UDP socket on port {listenPort} before giving up and throwing an error. -->
+    <internalValue>3</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  <member name="openListenerRetryDelay">
+    <!-- Time (in milliseconds) between each attempt at opening the UDP socket. -->
+    <internalValue>1000</internalValue>
+    <externalValueType>Optional</externalValueType>
+  </member>
+  
 
 </configurationMembers>

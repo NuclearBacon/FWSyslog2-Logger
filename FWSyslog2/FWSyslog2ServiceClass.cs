@@ -11,7 +11,7 @@ namespace FWSyslog2
         #region Region: Member definitions
 
         // service status
-        bool serviceIsStopping = false;
+        private bool serviceIsStopping = false;
 
         // TEMP
         private List<string> TEMP_messageQueueVisualizer = new List<string>();
@@ -22,6 +22,9 @@ namespace FWSyslog2
 
         #region Region: Base service methods
 
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
         public FWSyslog2ServiceClass()
         {
             InitializeComponent();
@@ -35,9 +38,18 @@ namespace FWSyslog2
             messageQueue.CollectionChanged += messageQueue_CollectionChanged;
         }
 
+        /// <summary>
+        /// This method is serving as our testing Service:OnStart() call until converting to a service class.
+        /// </summary>
+        /// <remarks>
+        /// TODO:  Add pre-startup configuration error handling.
+        /// TODO:  Add error handling for listener thread startup.
+        /// TODO:  Remove temporary testing code.
+        /// </remarks>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
-            // This method is serving as our testing Service:OnStart() call.
 
             configSettings = new ConfigurationSettings();
 
@@ -55,9 +67,16 @@ namespace FWSyslog2
             }
             else
             {
-                listenerThread = new Thread(new ThreadStart(Listener));
-                listenerThread.IsBackground = false;
-                listenerThread.Start();
+                try
+                {
+                    listenerThread = new Thread(() => ListenerThreadBootstrap(() => Listener(), BootstrapExceptionHanlder));
+                    listenerThread.IsBackground = false;
+                    listenerThread.Start();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
 
                 System.Windows.Forms.Timer timTemp = new System.Windows.Forms.Timer();
                 timTemp.Interval = 50;
@@ -66,7 +85,22 @@ namespace FWSyslog2
             }
         }
 
+        private static void ListenerThreadBootstrap(Action strappedMethod, Action<Exception> handler)
+        {
+            try
+            {
+                strappedMethod();
+            }
+            catch (Exception e)
+            {
+                handler(e);
+            }
+        }
 
+        private void BootstrapExceptionHanlder(Exception exception)
+        {
+            serviceIsStopping = true;
+        }
 
         // ======================== TEMP VISUALIZER == REMOVE THIS =========================
         void timTemp_Tick(object sender, EventArgs e)
@@ -84,4 +118,3 @@ namespace FWSyslog2
         #endregion
     }
 }
-
